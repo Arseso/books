@@ -56,13 +56,13 @@ WHERE id = {}"""
 GET_BOOKS_UPDATE_USER = """
     SELECT creator_id, permission, author,
     book_name, src, image_src, price, pages, id, last_update FROM Books 
-    WHERE (creator_id = {user_id} OR permission = 'public') AND last_update > {}
+    WHERE (creator_id = {user_id} OR permission = 'public') AND last_update > '{}'
 ;"""
 
 GET_BOOKS_UPDATE_ADM = """
     SELECT creator_id, permission, author,
     book_name, src, image_src, price, pages, id, last_update FROM Books 
-    WHERE last_update > {}
+    WHERE last_update > '{}'
 ;"""
 
 # users requests

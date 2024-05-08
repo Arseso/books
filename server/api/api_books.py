@@ -34,8 +34,19 @@ def add_book(token: str, book_json: str) -> str | None:
     return None
 
 
-def get_books_update(usr_token: str, last_update: datetime) -> str:
-    return None
+def get_books_update(usr_token: str, last_update: str) -> str:
+    user = get_id_by_token(usr_token)
+    if user == -1:
+        return "User not found."
+    else:
+        if is_admin(usr_token):
+            books = db_get(lib.GET_BOOKS_UPDATE_ADM.format(last_update))
+        else:
+            books = db_get(lib.GET_BOOKS_UPDATE_USER.format(user, last_update))
+        data_books = []
+        for book in books:
+            data_books.append(Book(*book))
+    return get_json_from_book(data_books)
 
 
 def del_book(token: str, book_id: int) -> str | None:
@@ -70,3 +81,5 @@ def set_book(token: str, book_json: str) -> str | None:
 #print(add_book("gy0so", """{"id": 1, "creator_id": 4, "permission": "private", "author": "T", "book_name": "1",
 #"src": "1", "image_src": "1", "price": 100, "pages": 500}"""))
 #print(del_book("gy0so", 5))
+
+print(get_books_update("gy0so", "2024-05-09 00:34:11.224905"), sep="\n")
