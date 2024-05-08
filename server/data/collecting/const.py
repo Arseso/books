@@ -20,5 +20,5 @@ DIV_PAGES_CLASS = "pages2"
 
 IMG_CLASS = "book-img-cover"
 
-
+DIV_BOOK_BLOCK_CLASS = "product-card need-watch"
 

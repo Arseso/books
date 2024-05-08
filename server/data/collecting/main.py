@@ -1,4 +1,4 @@
-from server.data.collecting.parsing import parse_books
+from server.data.collecting.parsing import parse_book_divs
 
 PAGES = [
     "https://www.labirint.ru/search/python/?stype=0&page=1",
@@ -10,7 +10,7 @@ PAGES = [
 
 def main():
     for page in PAGES:
-        parse_books(page)
+        parse_book_divs(page)
         print(f"{page} append to db")
 
 

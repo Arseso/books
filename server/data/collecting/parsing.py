@@ -9,10 +9,8 @@ import requests as req
 import server.data.collecting.const as c
 
 
-
-
-def db_add(*args) -> None:
-    return db_set(lib.ADD_BOOK.format(*args))
+def db_add(book: Book) -> None:
+    return db_set(lib.ADD_BOOK.format(*book.get_params()))
 
 
 def get_page(src: str) -> BeautifulSoup:
@@ -43,18 +41,23 @@ def get_pages(source: str) -> int:
     return int(re.search(r"Страниц: (\d+)", text).group(1))
 
 
-def parse_books(source: str) -> None:
+def parse_book_from_div(div: bs) -> None:
+    try:
+        title = div('a', {'class': c.A_TITLE_CLASS})[0]['title']
+        author = get_authors(div('div', {'class': c.DIV_AUTHOR_CLASS})[0])
+        src = c.PAGE_HOME + div('a', {'class': c.A_TITLE_CLASS})[0]['href']
+        img_src = div('img', {'class': c.IMG_CLASS})[0]['data-src']
+        price = get_float(div('div', {'class': c.DIV_PRICE_CLASS})[0].text)
+        pages = get_pages(src)
+    except IndexError:
+        print(f"Error while parsing book")
+        return None
+    db_add(Book(creator_id=4, permission="public", book_name=title, author=author, src=src, price=price, pages=pages,
+                image_src=img_src))
+    return None
+
+
+def parse_book_divs(source: str) -> None:
     page = get_page(source)
-    titles = [a['title'] for a in page('a', {'class': c.A_TITLE_CLASS})]
-    authors = [get_authors(a) for a in page('div', {'class': c.DIV_AUTHOR_CLASS})]
-    sources = [c.PAGE_HOME + a['href'] for a in page('a', {'class': c.A_TITLE_CLASS})]
-    img_sources = [a['data-src'] for a in page('img', {'class': c.IMG_CLASS})]
-    costs = [get_float(a.text.strip()) for a in page('div', {'class': c.DIV_PRICE_CLASS})]
-    pages = [get_pages(source) for source in sources]
-    if len(titles) == len(authors) == len(sources) == len(img_sources) == len(costs) == len(pages):
-        print("Equal")
-
-    for i in range(len(sources)):
-        print(sources[i])
-        db_add(4, "public", authors[i], titles[i], sources[i], img_sources[i], costs[i], pages[i])
-
+    for div in page('div', {'class': c.DIV_BOOK_BLOCK_CLASS}):
+        parse_book_from_div(div)
