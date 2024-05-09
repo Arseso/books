@@ -1,1 +1,9 @@
-{}
+{login}:{password}/token/get - response: user token
+{token}/adm/set/{token object} - response: none, set user with "token object" admin role
+{token}/usr/del/{token object} - response: none, del user with "token object"
+
+{token}/book/get - response: jsons list (books), get books from database
+{token}/book/add/{json (Book)} - response: none, add book to database
+{token}/book/del/{id} - response: None, delete book from database, where id = "id"
+{token}/book/edit/{json (Book)} - response: None, if have permissions, edit the book in database
+{token}/book/upd/{last_update) - response: jsons list (books) | None, returns books if table has updates or inserts after "last_update"
