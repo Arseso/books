@@ -1,5 +1,4 @@
 import sys
-import time
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 

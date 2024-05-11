@@ -8,15 +8,14 @@ from client.requests.req import get_updates
 from client.config import set_token_value
 from client.ui.dialogs import show_error_dialog
 
-requests_queue = []
-connection = None
-
+_requests_queue = []
+_connection = None
 _books_received = False
 
 
 def append_to_queue(request: str) -> None:
-    global requests_queue
-    requests_queue.append(request)
+    global _requests_queue
+    _requests_queue.append(request)
 
 
 def response_controller(response: str) -> None:
@@ -58,20 +57,20 @@ def response_controller(response: str) -> None:
 
 def send_request(req_str: str) -> None:
     try:
-        global connection
+        global _connection
         print(req_str)
-        connection.sendall(req_str.encode())
-        response = connection.recv(8192)
+        _connection.sendall(req_str.encode())
+        response = _connection.recv(8192)
         response_controller(response.decode('utf-8')[:-1])
     except TimeoutError:
         print("Request timed out.")
 
 
 def event_loop() -> None:
-    global requests_queue
+    global _requests_queue
     while True:
-        while requests_queue:
-            req_str = requests_queue.pop(0)
+        while _requests_queue:
+            req_str = _requests_queue.pop(0)
             action = Thread(target=send_request, args=(req_str,))
             action.start()
 
@@ -84,10 +83,10 @@ def event_loop() -> None:
 
 
 def init_event_loop():
-    global connection
+    global _connection
     try:
-        connection = init_socket()
+        _connection = init_socket()
         loop = Thread(target=event_loop)
         loop.start()
     except KeyboardInterrupt:
-        connection.close()
+        _connection.close()

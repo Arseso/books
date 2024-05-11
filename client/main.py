@@ -2,7 +2,7 @@ import os
 import sys
 
 import client.requests.req
-from client.core.event_loop import init_event_loop, requests_queue
+from client.core.event_loop import init_event_loop
 from client.ui.auth import init_auth
 
 
