@@ -13,7 +13,7 @@ from server.data.usr import is_admin
 def get_books(usr_token: str) -> str:
     user = get_id_by_token(usr_token)
     if user == -1:
-        return "User not found."
+        return "[GET]" + "User not found."
     else:
         if is_admin(usr_token):
             books = db_get(lib.GET_BOOKS_ADM)
@@ -22,13 +22,13 @@ def get_books(usr_token: str) -> str:
         data_books = []
         for book in books:
             data_books.append(Book(*book))
-    return get_json_from_book(data_books)
+    return "[GET]" + get_json_from_book(data_books)
 
 
 def add_book(token: str, book_json: str) -> str | None:
     user = get_id_by_token(token)
     if user == -1:
-        return "User not found."
+        return "[ADD]" + "User not found."
     book = get_book_from_json(book_json)
     db_set(lib.ADD_BOOK.format(*book.get_params()))
     return None
@@ -37,7 +37,7 @@ def add_book(token: str, book_json: str) -> str | None:
 def get_books_update(usr_token: str, last_update: str) -> str:
     user = get_id_by_token(usr_token)
     if user == -1:
-        return "User not found."
+        return "[UPD]" + "User not found."
     else:
         if is_admin(usr_token):
             books = db_get(lib.GET_BOOKS_UPDATE_ADM.format(last_update))
@@ -46,37 +46,36 @@ def get_books_update(usr_token: str, last_update: str) -> str:
         data_books = []
         for book in books:
             data_books.append(Book(*book))
-    return get_json_from_book(data_books)
+    return "[UPD]" + get_json_from_book(data_books)
 
 
 def del_book(token: str, book_id: int) -> str | None:
     user = get_id_by_token(token)
     if user == -1:
-        return "User not found."
+        return "[DEL]" + "User not found."
     creator = db_get(lib.GET_BOOK_CREATOR_ID.format(book_id))
     if len(creator) == 0:
-        return "No book found."
+        return "[DEL]" + "No book found."
     if is_admin(token) or user == creator[0][0]:
         db_set(lib.DEL_BOOK.format(book_id))
         return None
     else:
-        return "You don't have permissions."
+        return "[DEL]" + "You don't have permissions."
 
 
 def set_book(token: str, book_json: str) -> str | None:
     user = get_id_by_token(token)
     if user == -1:
-        return "User not found."
+        return "[SET]" + "User not found."
     book = get_book_from_json(book_json)
     creator = db_get(lib.GET_BOOK_CREATOR_ID.format(book.id))
     if len(creator) == 0:
-        return "No book found."
+        return "[SET]" + "No book found."
     if is_admin(token) or user == creator[0][0]:
         db_set(lib.UPD_BOOK.format(*book.get_params(), book.id))
         return None
     else:
-        return "You don't have permissions."
-
+        return "[SET]" + "You don't have permissions."
 
 #print(add_book("gy0so", """{"id": 1, "creator_id": 4, "permission": "private", "author": "T", "book_name": "1",
 #"src": "1", "image_src": "1", "price": 100, "pages": 500}"""))

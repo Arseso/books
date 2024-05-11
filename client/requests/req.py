@@ -11,29 +11,29 @@ from client.requests.json_worker import Book, get_json_from_book
 last_update = None
 
 
-def get_token(login: str, password: str) -> tuple[str, str]:
-    return "AUTH", lib.r_get_token.format(login, password)
+def get_token(login: str, password: str) -> str:
+    return lib.r_get_token.format(login, password)
 
 
-def get_books() -> tuple[str, str]:
+def get_books() -> str:
     global last_update
     last_update = datetime.now()
-    return "GET", lib.r_get_books.format(os.getenv('token'))
+    return lib.r_get_books.format(os.getenv('token'))
 
 
-def delete_book(book: Book) -> tuple[str, str]:
-    return "DEL", lib.r_del_book_by_id.format(os.getenv('token'), book.id)
+def delete_book(book: Book) -> str:
+    return lib.r_del_book_by_id.format(os.getenv('token'), book.id)
 
 
-def update_book(book: Book) -> tuple[str, str]:
+def update_book(book: Book) -> str:
     json = get_json_from_book(book)
-    return "EDIT", lib.r_edit_book.format(os.getenv('token'), json)
+    return lib.r_edit_book.format(os.getenv('token'), json)
 
 
-def get_updates() -> tuple[str, str]:
+def get_updates() -> str:
     global last_update
     if last_update is None:
         last_update = datetime.now()
     temp = last_update
     last_update = datetime.now()
-    return "UPD", lib.r_upd_books.format(get_token_value(), temp.strftime("%Y-%m-%d %H:%M:%S.%f"))
+    return lib.r_upd_books.format(get_token_value(), temp.strftime("%Y-%m-%d %H:%M:%S.%f"))

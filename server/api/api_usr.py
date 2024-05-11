@@ -11,7 +11,7 @@ from server.data.usr import register, is_admin
 
 def get_token(nick: str, passwd: str) -> str:
     data = db_get(request=lib.GET_USER_TOKEN.format(nick=nick, passwd=passwd))
-    return data[0][0] if len(data) == 1 else register(nick=nick, passwd=passwd)
+    return "[TOKEN]" + data[0][0] if len(data) == 1 else register(nick=nick, passwd=passwd)
 
 
 def set_admin(token_subject: str, token_object: str) -> str:
@@ -19,7 +19,7 @@ def set_admin(token_subject: str, token_object: str) -> str:
         db_set(lib.SET_USER_ROLE.format(token=token_object, role="adm"))
         print_server_changed_role_for_user(token_subject, token_object)
     else:
-        return "You must be an adm to changing role."
+        return "[ERR]" + "You must be an adm to changing role."
 
 
 def del_user(token_subject: str, token_object: str):
@@ -28,7 +28,7 @@ def del_user(token_subject: str, token_object: str):
         db_set(lib.DEL_USER.format(token=token_object))
         print_server_delete_user(token_subject, token_object)
     else:
-        return "You must be an adm to changing role."
+        return "[ERR]" + "You must be an adm to changing role."
 
 
 def get_id_by_token(token: str) -> int:
