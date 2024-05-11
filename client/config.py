@@ -18,4 +18,3 @@ def get_token_value() -> str:
 def set_token_value(token: str) -> None:
     global TOKEN
     TOKEN = token
-    print(TOKEN + "1")

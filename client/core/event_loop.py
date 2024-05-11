@@ -7,24 +7,29 @@ from client.core.connection import *
 from client.requests.json_worker import get_book_from_json
 from client.requests.req import get_updates
 from client.config import set_token_value
+from client.ui.dialogs import show_error_dialog
+
 
 requests_queue = []
 connection = None
 
+_books_received = False
 
-def append_to_queue(item):
+def append_to_queue(request: tuple[str, str]):
     global requests_queue
-    requests_queue.append()
+    requests_queue.append(request)
 
 
 def response_controller(req_type: str, response: str) -> None:
+    global _books_received
     if req_type == 'AUTH':
         set_token_value(response)
-        print("Authentication successful:" + response)
+
+        show_error_dialog("you gay")
 
     if req_type == 'GET':
         books = get_book_from_json(response)
-        pass  # set books to UI
+        _books_received = True
 
     if req_type == 'EDIT':
         if response == "User not found.":
@@ -47,9 +52,9 @@ def response_controller(req_type: str, response: str) -> None:
             pass  # DEL book from UI
     if req_type == 'UPD':
         if response == "User not found.":
-            print("User not found.")
-        if response != "[]":
-            print(response)
+            pass
+        elif response != "[]":
+            show_error_dialog("No updates found.")
 
 
 def send_request(req_type: str, req_str: str) -> None:
@@ -67,15 +72,15 @@ def event_loop() -> None:
     while True:
         while requests_queue:
             req_type, req_str = requests_queue.pop(0)
-            print("main request")
             action = Thread(target=send_request, args=(req_type, req_str))
             action.start()
-        time.sleep(1)
-        req_type, req_str = get_updates()
-        print("update: " + req_str)
 
-        action = Thread(target=send_request, args=(req_type, req_str))
-        action.start()
+        if _books_received:
+            time.sleep(1)
+            req_type, req_str = get_updates()
+
+            action = Thread(target=send_request, args=(req_type, req_str))
+            action.start()
 
 
 def init_event_loop():
@@ -86,8 +91,3 @@ def init_event_loop():
         loop.start()
     except KeyboardInterrupt:
         connection.close()
-
-
-def get_token() -> str:
-    global TOKEN
-    return TOKEN
