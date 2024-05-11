@@ -9,10 +9,10 @@ lib = {
 
     # BOOKS requests
     r"(\w+)\/book\/get":  books.get_books,
-    r"(\w+)\/book\/add\/(\w+)": books.add_book,
+    r"(\w+)\/book\/add\/(.*)$": books.add_book,
     r"(\w+)\/book\/del\/(\d+)": books.del_book,
-    r"(\w+)\/book\/edit\/(\w+)": books.set_book,
-    r"(\w+)\/book\/upd\/(\w+)": books.get_books_update
+    r"(\w+)\/book\/edit\/(.*)$": books.set_book,
+    r"(\w+)\/book\/upd\/(.*)$": books.get_books_update
 
 
 }

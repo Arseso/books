@@ -1,14 +1,10 @@
 import os
-from socket import socket
+import socket
+import client.config as cfg
 
-connection = None
+def init_socket() -> socket.socket:
+    connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    connection.connect((cfg.host, int(cfg.port)))
+    connection.settimeout(3.0)
+    return connection
 
-def init_socket() -> None:
-    global connection
-    connection = socket(socket.AF_INET, socket.SOCK_STREAM)
-    connection.connect((os.getenv('host'), os.getenv('port')))
-
-
-def close_connection() -> None:
-    global connection
-    connection.close()

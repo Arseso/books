@@ -5,6 +5,7 @@ from datetime import datetime
 import jsons
 
 import client.requests.lib as lib
+from client.config import get_token_value
 from client.requests.json_worker import Book, get_json_from_book
 
 last_update = None
@@ -31,6 +32,8 @@ def update_book(book: Book) -> tuple[str, str]:
 
 def get_updates() -> tuple[str, str]:
     global last_update
+    if last_update is None:
+        last_update = datetime.now()
     temp = last_update
     last_update = datetime.now()
-    return "UPD", lib.r_upd_books.format(os.getenv('token'), temp.strftime("%Y-%m-%d %H:%M:%S.%f"))
+    return "UPD", lib.r_upd_books.format(get_token_value(), temp.strftime("%Y-%m-%d %H:%M:%S.%f"))

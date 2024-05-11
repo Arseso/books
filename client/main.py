@@ -1,15 +1,13 @@
 import os
 import sys
 
+import client.requests.req
+from client.core.event_loop import init_event_loop, requests_queue
+
 
 def main():
-    try:
-        os.environ['host'] = sys.argv[1]
-        os.environ['port'] = sys.argv[2]
-        print(os.getenv('host'))
-    except IndexError:
-        print('Usage: main.py <host> <port>')
-        return
+    requests_queue.append(client.requests.req.get_token("admin", "12345"))
+    init_event_loop()
 
 
 if __name__ == '__main__':
