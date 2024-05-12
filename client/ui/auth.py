@@ -50,9 +50,7 @@ class LoginWindow(QMainWindow):
         self.close()
 
 
-def init_auth():
-    app = QApplication(sys.argv)
+def init_auth(app: QApplication):
     window = LoginWindow()
     window.show()
     app.exec()
-

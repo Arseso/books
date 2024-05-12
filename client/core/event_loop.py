@@ -11,7 +11,7 @@ from client.ui.dialogs import show_error_dialog
 _requests_queue = []
 _connection = None
 _books_received = False
-
+_close = False
 
 def append_to_queue(request: str) -> None:
     global _requests_queue
@@ -20,10 +20,8 @@ def append_to_queue(request: str) -> None:
 
 def response_controller(response: str) -> None:
     global _books_received
-    print(response)
     if re.match(r"\[TOKEN](.*)$", response):
         set_token_value(re.search(r"\[TOKEN](.*)$", response).group(1))
-        print(re.search(r"\[TOKEN](.*)$", response).group(1))
 
     if re.match(r"\[GET](.*)$", response):
         books = get_book_from_json(re.search(r"[GET](.*)$", response).group(1))
@@ -68,7 +66,11 @@ def send_request(req_str: str) -> None:
 
 def event_loop() -> None:
     global _requests_queue
+    global _close
     while True:
+        if _close:
+            print("event_loop closed")
+            break
         while _requests_queue:
             req_str = _requests_queue.pop(0)
             action = Thread(target=send_request, args=(req_str,))
@@ -90,3 +92,7 @@ def init_event_loop():
         loop.start()
     except KeyboardInterrupt:
         _connection.close()
+
+def close_event_loop():
+    global _close
+    _close = True

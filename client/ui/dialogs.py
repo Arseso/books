@@ -22,11 +22,7 @@ class ErrorDialog(QDialog):
 
 
 def show_error_dialog(error_message: str) -> None:
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication(sys.argv)
     dialog = ErrorDialog(error_message)
-    dialog.exec()
-    app.exec()
+    dialog.show()
 
 
