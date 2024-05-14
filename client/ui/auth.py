@@ -2,7 +2,7 @@ import sys
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
-from client.core.event_loop import append_to_queue
+from client.core.req_queue import append_to_queue
 from client.config import get_token_value
 from client.requests.req import get_token
 
@@ -50,7 +50,7 @@ class LoginWindow(QMainWindow):
         self.close()
 
 
-def init_auth(app: QApplication):
+def init_auth() -> LoginWindow:
     window = LoginWindow()
-    window.show()
-    app.exec()
+    print("inited3")
+    return window
