@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import List
 
 import jsons
 
@@ -15,7 +16,7 @@ class Book:
     price: float
     pages: int
     id: int = None
-    last_updated: datetime = None
+
 
 
 def get_json_from_book(book: Book | list[Book]) -> str:
@@ -23,7 +24,16 @@ def get_json_from_book(book: Book | list[Book]) -> str:
     return jsons.dumps(book_dict, indent=4)
 
 
-def get_book_from_json(json_data: str) -> Book | list[Book]:
-    dict_data = jsons.loads(json_data)
-    book = Book(**dict_data)
-    return book
+def get_books_from_json(json_data):
+    try:
+        # Check if the json_data is a string
+        if isinstance(json_data, str):
+            # Attempt to load a list of Book objects
+            books = jsons.loads(json_data, List[Book])
+            return books
+        else:
+            # If json_data is not a string, assume it's already a list of Book objects
+            return jsons.load(json_data, List[Book])
+    except jsons.exceptions.DeserializationError as e:
+        print(f"Deserialization error: {e}")
+        return []

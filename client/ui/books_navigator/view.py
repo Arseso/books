@@ -33,7 +33,7 @@ class BookStoreView(QMainWindow):
             self.add_book_to_table(book.title, book.author, book.pages, book.price)
 
 
-_window = BookStoreView()
+_window = None
 
 
 def get_window() -> BookStoreView:
@@ -41,4 +41,6 @@ def get_window() -> BookStoreView:
 
 
 def init_books_navigator() -> BookStoreView:
+    global _window
+    _window = BookStoreView()
     return _window

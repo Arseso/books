@@ -14,10 +14,18 @@ _close = False
 def send_request(req_str: str) -> None:
     try:
         global _connection
-        print(req_str)
         _connection.sendall(req_str.encode())
-        response = _connection.recv(8192)
-        response_controller(response.decode('utf-8')[:-1])
+        time.sleep(1)
+        response = b""
+        try:
+            while True:
+                packet = _connection.recv(8192)
+                if not packet:
+                    break
+                response += packet
+        except socket.error:
+            print("No data to read.")
+        response_controller(response.decode('utf-8'))
     except TimeoutError:
         print("Request timed out.")
 
@@ -27,13 +35,11 @@ def event_loop() -> None:
     while not _close:
         while is_queue_not_empty():
             req_str = pop_from_queue()
-            action = Thread(target=send_request, args=(req_str,))
-            action.start()
+            send_request(req_str)
+        req_str = get_updates()
+        send_request(req_str)
 
-        time.sleep(1)
-        req_type, req_str = get_updates()
-        action = Thread(target=send_request, args=(req_str,))
-        action.start()
+
 
 
 def init_event_loop():

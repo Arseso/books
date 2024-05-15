@@ -18,16 +18,16 @@ def get_token(login: str, password: str) -> str:
 def get_books() -> str:
     global last_update
     last_update = datetime.now()
-    return lib.r_get_books.format(os.getenv('token'))
+    return lib.r_get_books.format(get_token_value())
 
 
 def delete_book(book: Book) -> str:
-    return lib.r_del_book_by_id.format(os.getenv('token'), book.id)
+    return lib.r_del_book_by_id.format(get_token_value(), book.id)
 
 
 def update_book(book: Book) -> str:
     json = get_json_from_book(book)
-    return lib.r_edit_book.format(os.getenv('token'), json)
+    return lib.r_edit_book.format(get_token_value(), json)
 
 
 def get_updates() -> str:

@@ -18,7 +18,7 @@ def make_response(request: str) -> str:
             try:
                 result = lib[req](*params)
                 if result is not None:
-                    return result+"\n"
+                    return result+"[END]"
                 else:
                     return succeeded()
             except TypeError:

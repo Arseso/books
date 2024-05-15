@@ -21,20 +21,22 @@ def check_connection(server: socket) -> tuple[str, socket]:
 
 
 def handle_request(client: socket) -> tuple[str, socket]:
-    while True:
-        yield "R", client
+    try:
+        while True:
+            yield "R", client
+            request = client.recv(8192)
+            logs.print_got_request(client)
+            if not request:
+                logs.print_disconnected_client(client)
+                break
+            else:
+                yield "W", client
 
-        request = client.recv(8192)
-        logs.print_got_request(client)
-        if not request:
-            logs.print_disconnected_client(client)
-            break
-        else:
-            yield "W", client
-
-            response = make_response(request.decode())
-            client.send(response.encode())
-            logs.print_send_response(client)
+                response = make_response(request.decode())
+                client.send(response.encode())
+                logs.print_send_response(client)
+    except ConnectionResetError:
+        return None
 
 
 def event_loop() -> None:
